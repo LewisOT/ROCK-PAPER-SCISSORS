@@ -1,6 +1,18 @@
+
+let scoring = document.querySelector(".scoreboard")
+let allButtons = document.querySelectorAll("img")
+let playerScore = 0
+let computerScore = 0
+let drawPoint = 0
+
+
+for (bt of allButtons) {
+  bt.addEventListener("click", game)
+}
+
 function computerPlay() {
   let choice = ""
-  let randomNumber = Math.floor(Math.random() * 3) + 1
+  let randomNumber = Math.floor(Math.random() * 3) 
   if (randomNumber === 1) {
     choice = "rock"
   } else if (randomNumber == 2) {
@@ -10,73 +22,68 @@ function computerPlay() {
   }
   return choice
 }
-//const playerSelection = prompt("Rock, paper or scissor?").toLowerCase()
 
-/*const playerSelection = "rock"
-const computerSelection = computerPlay()*/
+function finalMessage (playerScore, computerScore) {
+  if (playerScore === 5 || computerScore === 5) {
+    for (bt of allButtons) {
+      bt.removeEventListener("click", game)
+    }
+  }
+  if (playerScore === 5) {
+      document.querySelector(".miniResult").innerHTML = "🎉You made it to 5 points first. You win.🎉 Humans win another day of survival!"
+  
+    }
+    else if (computerScore === 5) {
+      document.querySelector(".miniResult").innerHTML = "The computer made it to 5 points first. You Lose. Say hello to your new robot overlords.🤖"
+
+    }
+}
+
+
 function playRound(playerSelection, computerSelection) {
-  let stringOut = ""
-  if (playerSelection === "rock") {
-    if (computerSelection === "scissors") {
-      return "You win! Rock beats scissors!"
-    } else if (computerSelection === "paper") {
-      return "You lose! Paper beats rock!"
-    } else {
-      return "Draw!"
-    }
-  }
-  if (playerSelection === "scissors") {
-    if (computerSelection === "rock") {
-      return "You lose! Rock beats scissors!"
-    } else if (computerSelection === "paper") {
-      return "You win! Scissors beats paper!"
-    } else {
-      return "Draw!"
-    }
-  }
-  if (playerSelection === "paper") {
-    if (computerSelection === "rock") {
-      return "You win! Paper beats rock!"
-    } else if (computerSelection === "scissors") {
-      return "You lose! Scissors beats paper"
-    } else {
-      return "Draw!"
-    }
+
+  if (playerSelection === "rock" && computerSelection === "scissors" ||
+      playerSelection === "scissor" && computerSelection === "paper" ||
+      playerSelection === "paper" && computerSelection === "rock") {
+        return 1
+      }
+
+  else if (computerSelection === "rock" && playerSelection === "scissors" ||
+      computerSelection === "scissor" && playerSelection === "paper" ||
+      computerSelection === "paper" && playerSelection === "rock") {
+        return -1
+      }
+
+  else  {
+    return 0
   }
 }
 
-function game() {
-  let playerScore = 0
-  let computerScore = 0
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = prompt("Rock, paper or scissor?").toLowerCase()
-    const computerSelection = computerPlay()
-    let outCome = playRound(playerSelection, computerSelection)
-    if (outCome.includes("win")) {
+
+function game(event) {
+  let scoring = document.querySelector(".scoreboard")
+  let playerSelection = event.target.alt
+  let computerSelection = computerPlay()
+  let outCome = playRound(playerSelection, computerSelection)
+  document.querySelector(".scoreboard").innerHTML = "Player: " + playerScore +   " Computer: " + computerScore + ". Draw: " + playerScore 
+  
+
+    if (outCome === 1) {
+
       playerScore += 1
-    } else if (outCome.includes("lose")) {
-      computerScore += 1
-    }
-  }
-  if (playerScore > computerScore) {
-    return (
-      "You win! The final score is: " +
-      "Player: " +
-      playerScore +
-      " and " +
-      "Computer: " +
-      computerScore
-    )
-  } else {
-    return (
-      "You Lose! The final score is: " +
-      "Computer: " +
-      computerScore +
-      " and " +
-      "Player: " +
-      playerScore
-    )
-  }
-}
+      document.querySelector(".scoreboard").innerHTML = "Player: " + playerScore +   " Computer: " + computerScore + " Draw: " + drawPoint
+      document.querySelector(".miniResult").innerHTML = "Player wins this round. " + playerSelection + " beats " + computerSelection + "."
+    } else if (outCome === -1) {
 
-console.log(game())
+      computerScore += 1
+      document.querySelector(".scoreboard").innerHTML = "Player: " + playerScore +   " Computer: " + computerScore + " Draw: " + drawPoint
+      document.querySelector(".miniResult").innerHTML = "Computer wins this round. " + computerSelection + " beats " + playerSelection + "."
+    }
+    else if (outCome === 0) {
+      drawPoint++
+      document.querySelector(".miniResult").innerHTML = "Draw"
+      document.querySelector(".scoreboard").innerHTML = "Player: " + playerScore +   " Computer: " + computerScore + ". Draw: " + drawPoint
+    }
+
+  finalMessage(playerScore, computerScore)
+}
